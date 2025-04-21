@@ -149,9 +149,10 @@ local function A8(A9, A10)
 	return A12
 end
 
-local A13 = A8("X", UDim2.new(0, 100, 0, 200))
-local A14 = A8("Y", UDim2.new(0, 100, 0, 240))
-local A15 = A8("Z", UDim2.new(0, 100, 0, 280))
+-- Position the coordinate frames to the right side of the screen
+local A13 = A8("X", UDim2.new(1, -210, 0, 200))
+local A14 = A8("Y", UDim2.new(1, -210, 0, 240))
+local A15 = A8("Z", UDim2.new(1, -210, 0, 280))
 
 local A16 = {
 	Color3.fromRGB(0, 0, 100),
