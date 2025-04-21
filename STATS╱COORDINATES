@@ -1,0 +1,194 @@
+-- Script created by @lightgray2, it is OpenSource
+
+--/Statistics/--
+local A = game:GetService("Players")
+local B = game:GetService("RunService")
+local C = A.LocalPlayer
+local D = C:GetMouse()
+
+local E = C:FindFirstChild("PlayerGui"):FindFirstChild("asset1")
+if E then
+	E:Destroy()
+end
+
+local F = Instance.new("ScreenGui")
+F.Name = "asset1"
+F.ResetOnSpawn = false
+F.Parent = C:WaitForChild("PlayerGui")
+
+local function G(H, I)
+	local J = Instance.new("Frame")
+	J.Name = H .. "Frame"
+	J.Size = UDim2.new(0, 200, 0, 30)
+	J.Position = I
+	J.BackgroundTransparency = 1
+	J.Active = true
+	J.Draggable = true
+	J.Parent = F
+
+	local K = Instance.new("TextLabel")
+	K.Name = H .. "Label"
+	K.Size = UDim2.new(1, 0, 1, 0)
+	K.BackgroundTransparency = 1
+	K.Font = Enum.Font.Code
+	K.TextSize = 18
+	K.TextColor3 = Color3.fromRGB(255, 255, 255)
+	K.TextTransparency = 0.25
+	K.Text = H .. ": 0"
+	K.Parent = J
+
+	return K
+end
+
+local L = G("FPS", UDim2.new(0, 100, 0, 200))
+local M = G("Ping", UDim2.new(0, 100, 0, 240))
+local N = G("CPS", UDim2.new(0, 100, 0, 280))
+
+local O = {}
+D.Button1Down:Connect(function()
+	table.insert(O, tick())
+end)
+
+local P = {
+	Color3.fromRGB(0, 0, 100),
+	Color3.fromRGB(0, 0, 255),
+	Color3.fromRGB(0, 255, 255),
+	Color3.fromRGB(255, 255, 255),
+	Color3.fromRGB(0, 255, 255),
+	Color3.fromRGB(0, 0, 255),
+	Color3.fromRGB(0, 0, 100),
+}
+
+local function Q(R, S, T)
+	return Color3.new(
+		R.R + (S.R - R.R) * T,
+		R.G + (S.G - R.G) * T,
+		R.B + (S.B - R.B) * T
+	)
+end
+
+local U = 1
+local V = 0
+
+B.RenderStepped:Connect(function()
+	local W = tick()
+	for X = #O, 1, -1 do
+		if W - O[X] > 1 then
+			table.remove(O, X)
+		end
+	end
+	N.Text = "CPS: " .. #O
+
+	if not _G.lastFrameTime then _G.lastFrameTime = W end
+	if not _G.frames then _G.frames = 0 end
+	_G.frames += 1
+	if W - _G.lastFrameTime >= 1 then
+		L.Text = "FPS: " .. _G.frames
+		_G.frames = 0
+		_G.lastFrameTime = W
+	end
+
+	V += 0.01
+	if V >= 1 then
+		V = 0
+		U = U % #P + 1
+	end
+	local Y = U % #P + 1
+	local Z = Q(P[U], P[Y], V)
+
+	L.TextColor3 = Z
+	M.TextColor3 = Z
+	N.TextColor3 = Z
+end)
+
+while true do
+	local a = math.floor(C:GetNetworkPing() * 1000)
+	M.Text = "Ping: " .. a .. "ms"
+	task.wait(1)
+end
+
+--/Coordinates/--
+local A1 = game:GetService("Players")
+local A2 = game:GetService("RunService")
+local A3 = A1.LocalPlayer
+local A4 = A3.Character or A3.CharacterAdded:Wait()
+local A5 = A4:WaitForChild("HumanoidRootPart")
+
+local A6 = A3:FindFirstChild("PlayerGui"):FindFirstChild("Coordinates")
+if A6 then
+	A6:Destroy()
+end
+
+local A7 = Instance.new("ScreenGui")
+A7.Name = "Coordinates"
+A7.ResetOnSpawn = false
+A7.Parent = A3:WaitForChild("PlayerGui")
+
+local function A8(A9, A10)
+	local A11 = Instance.new("Frame")
+	A11.Name = A9 .. "_Frame"
+	A11.Size = UDim2.new(0, 200, 0, 30)
+	A11.Position = A10
+	A11.BackgroundTransparency = 1
+	A11.Active = true
+	A11.Draggable = true
+	A11.Parent = A7
+
+	local A12 = Instance.new("TextLabel")
+	A12.Name = A9 .. "_Label"
+	A12.Size = UDim2.new(1, 0, 1, 0)
+	A12.BackgroundTransparency = 1
+	A12.Font = Enum.Font.Code
+	A12.TextSize = 18
+	A12.TextColor3 = Color3.fromRGB(255, 255, 255)
+	A12.TextTransparency = 0.25
+	A12.Text = A9 .. ": 0"
+	A12.Parent = A11
+
+	return A12
+end
+
+local A13 = A8("X", UDim2.new(0, 100, 0, 200))
+local A14 = A8("Y", UDim2.new(0, 100, 0, 240))
+local A15 = A8("Z", UDim2.new(0, 100, 0, 280))
+
+local A16 = {
+	Color3.fromRGB(0, 0, 100),
+	Color3.fromRGB(0, 0, 255),
+	Color3.fromRGB(0, 255, 255),
+	Color3.fromRGB(255, 255, 255),
+	Color3.fromRGB(0, 255, 255),
+	Color3.fromRGB(0, 0, 255),
+	Color3.fromRGB(0, 0, 100),
+}
+
+local function A17(A18, A19, A20)
+	return Color3.new(
+		A18.R + (A19.R - A18.R) * A20,
+		A18.G + (A19.G - A18.G) * A20,
+		A18.B + (A19.B - A18.B) * A20
+	)
+end
+
+local A21 = 1
+local A22 = 0
+
+A2.RenderStepped:Connect(function()
+	local A23 = A5.Position
+	A13.Text = "X: " .. math.floor(A23.X)
+	A14.Text = "Y: " .. math.floor(A23.Y)
+	A15.Text = "Z: " .. math.floor(A23.Z)
+
+	A22 += 0.01
+	if A22 >= 1 then
+		A22 = 0
+		A21 = A21 % #A16 + 1
+	end
+
+	local A24 = A21 % #A16 + 1
+	local A25 = A17(A16[A21], A16[A24], A22)
+
+	A13.TextColor3 = A25
+	A14.TextColor3 = A25
+	A15.TextColor3 = A25
+end)
