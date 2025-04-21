@@ -1,55 +1,73 @@
--- Script created by @lightgray2, it is OpenSource
-
---/Statistics/--
+-- CREATED BY @lightgray2 - SRC
+-- setfpscap(value) :sob:
 local A = game:GetService("Players")
 local B = game:GetService("RunService")
-local C = A.LocalPlayer
-local D = C:GetMouse()
+local C = game:GetService("CoreGui")
+local D = A.LocalPlayer
+local E = D:GetMouse()
+local F = D.Character or D.CharacterAdded:Wait()
+local G = F:WaitForChild("HumanoidRootPart")
 
-local E = C:FindFirstChild("PlayerGui"):FindFirstChild("asset1")
-if E then
-	E:Destroy()
+local function ClearGui(guiName)
+	local found = C:FindFirstChild(guiName) or D:FindFirstChild("PlayerGui"):FindFirstChild(guiName)
+	if found then found:Destroy() end
 end
 
-local F = Instance.new("ScreenGui")
-F.Name = "asset1"
-F.ResetOnSpawn = false
-F.Parent = C:WaitForChild("PlayerGui")
+ClearGui("asset1")
+ClearGui("Coordinates_GUI")
 
-local function G(H, I)
-	local J = Instance.new("Frame")
-	J.Name = H .. "Frame"
-	J.Size = UDim2.new(0, 200, 0, 30)
-	J.Position = I
-	J.BackgroundTransparency = 1
-	J.Active = true
-	J.Draggable = true
-	J.Parent = F
+local H = Instance.new("ScreenGui")
+H.Name = "asset1"
+H.ResetOnSpawn = false
+H.Parent = C
 
-	local K = Instance.new("TextLabel")
-	K.Name = H .. "Label"
-	K.Size = UDim2.new(1, 0, 1, 0)
+local I = Instance.new("ScreenGui")
+I.Name = "Coordinates_GUI"
+I.ResetOnSpawn = false
+I.Parent = C
+
+local function J(name, pos, parentGui)
+	local K = Instance.new("Frame")
+	K.Size = UDim2.new(0, 200, 0, 30)
+	K.Position = pos
 	K.BackgroundTransparency = 1
-	K.Font = Enum.Font.Code
-	K.TextSize = 18
-	K.TextColor3 = Color3.fromRGB(255, 255, 255)
-	K.TextTransparency = 0.25
-	K.Text = H .. ": 0"
-	K.Parent = J
+	K.Active = true
+	K.Draggable = true
+	K.Visible = false
+	K.Parent = parentGui
 
-	return K
+	local L = Instance.new("TextLabel")
+	L.Size = UDim2.new(1, 0, 1, 0)
+	L.BackgroundTransparency = 1
+	L.Font = Enum.Font.Code
+	L.TextSize = 18
+	L.TextColor3 = Color3.fromRGB(255, 255, 255)
+	L.TextTransparency = 0.25
+	L.Text = name .. ": 0"
+	L.Name = tostring(math.random(10000, 99999))  -- Obfuscated name
+	L.Visible = true
+	L.Parent = K
+
+	task.wait(0.1)
+	K.Visible = true -- show frame later to avoid detection
+
+	return L
 end
 
-local L = G("FPS", UDim2.new(0, 100, 0, 200))
-local M = G("Ping", UDim2.new(0, 100, 0, 240))
-local N = G("CPS", UDim2.new(0, 100, 0, 280))
+local M = J("FPS", UDim2.new(0, 100, 0, 200), H)
+local N = J("Ping", UDim2.new(0, 100, 0, 240), H)
+local O = J("CPS", UDim2.new(0, 100, 0, 280), H)
 
-local O = {}
-D.Button1Down:Connect(function()
-	table.insert(O, tick())
+local P = J("X", UDim2.new(1, -300, 0, 200), I)
+local Q = J("Y", UDim2.new(1, -300, 0, 240), I)
+local R = J("Z", UDim2.new(1, -300, 0, 280), I)
+
+local S = {}
+E.Button1Down:Connect(function()
+	table.insert(S, tick())
 end)
 
-local P = {
+local T = {
 	Color3.fromRGB(0, 0, 100),
 	Color3.fromRGB(0, 0, 255),
 	Color3.fromRGB(0, 255, 255),
@@ -59,140 +77,67 @@ local P = {
 	Color3.fromRGB(0, 0, 100),
 }
 
-local function Q(R, S, T)
+local function U(a, b, c)
 	return Color3.new(
-		R.R + (S.R - R.R) * T,
-		R.G + (S.G - R.G) * T,
-		R.B + (S.B - R.B) * T
+		a.R + (b.R - a.R) * c,
+		a.G + (b.G - a.G) * c,
+		a.B + (b.B - a.B) * c
 	)
 end
 
-local U = 1
-local V = 0
+local V, W = 1, 0
+local X, Y = 1, 0
 
 B.RenderStepped:Connect(function()
-	local W = tick()
-	for X = #O, 1, -1 do
-		if W - O[X] > 1 then
-			table.remove(O, X)
+	local t = tick()
+	for i = #S, 1, -1 do
+		if t - S[i] > 1 then
+			table.remove(S, i)
 		end
 	end
-	N.Text = "CPS: " .. #O
+	O.Text = "CPS: " .. #S
 
-	if not _G.lastFrameTime then _G.lastFrameTime = W end
-	if not _G.frames then _G.frames = 0 end
-	_G.frames += 1
-	if W - _G.lastFrameTime >= 1 then
-		L.Text = "FPS: " .. _G.frames
-		_G.frames = 0
-		_G.lastFrameTime = W
+	if not _G.lf then _G.lf = t end
+	if not _G.fm then _G.fm = 0 end
+	_G.fm += 1
+	if t - _G.lf >= 1 then
+		M.Text = "FPS: " .. _G.fm
+		_G.fm = 0
+		_G.lf = t
 	end
 
-	V += 0.01
-	if V >= 1 then
-		V = 0
-		U = U % #P + 1
+	W += 0.01
+	if W >= 1 then
+		W = 0
+		V = V % #T + 1
 	end
-	local Y = U % #P + 1
-	local Z = Q(P[U], P[Y], V)
+	local col1 = V % #T + 1
+	local blend = U(T[V], T[col1], W)
 
-	L.TextColor3 = Z
-	M.TextColor3 = Z
-	N.TextColor3 = Z
+	M.TextColor3 = blend
+	N.TextColor3 = blend
+	O.TextColor3 = blend
+
+	local pos = G.Position
+	P.Text = "X: " .. math.floor(pos.X)
+	Q.Text = "Y: " .. math.floor(pos.Y)
+	R.Text = "Z: " .. math.floor(pos.Z)
+
+	Y += 0.01
+	if Y >= 1 then
+		Y = 0
+		X = X % #T + 1
+	end
+
+	local col2 = X % #T + 1
+	local blend2 = U(T[X], T[col2], Y)
+
+	P.TextColor3 = blend2
+	Q.TextColor3 = blend2
+	R.TextColor3 = blend2
 end)
 
 while true do
-	local a = math.floor(C:GetNetworkPing() * 1000)
-	M.Text = "Ping: " .. a .. "ms"
+	N.Text = "Ping: " .. math.floor(D:GetNetworkPing() * 1000) .. "ms"
 	task.wait(1)
 end
-
-task.wait(0.2)
---/Coordinates/--
--- Using morph in humanoid doesn't make Coordinates detect, I'd recommend you execute this again.
-
-local A1 = game:GetService("Players")
-local A2 = game:GetService("RunService")
-local A3 = A1.LocalPlayer
-local A4 = A3.Character or A3.CharacterAdded:Wait()
-local A5 = A4:WaitForChild("HumanoidRootPart")
-
-local A6 = A3:FindFirstChild("PlayerGui"):FindFirstChild("Coordinates")
-if A6 then
-	A6:Destroy()
-end
-
-local A7 = Instance.new("ScreenGui")
-A7.Name = "Coordinates"
-A7.ResetOnSpawn = false
-A7.Parent = A3:WaitForChild("PlayerGui")
-
-local function A8(A9, A10)
-	local A11 = Instance.new("Frame")
-	A11.Name = A9 .. "_Frame"
-	A11.Size = UDim2.new(0, 200, 0, 30)
-	A11.Position = A10
-	A11.BackgroundTransparency = 1
-	A11.Active = true
-	A11.Draggable = true
-	A11.Parent = A7
-
-	local A12 = Instance.new("TextLabel")
-	A12.Name = A9 .. "_Label"
-	A12.Size = UDim2.new(1, 0, 1, 0)
-	A12.BackgroundTransparency = 1
-	A12.Font = Enum.Font.Code
-	A12.TextSize = 18
-	A12.TextColor3 = Color3.fromRGB(255, 255, 255)
-	A12.TextTransparency = 0.25
-	A12.Text = A9 .. ": 0"
-	A12.Parent = A11
-
-	return A12
-end
-
--- Position the coordinate frames to the right side of the screen
-local A13 = A8("X", UDim2.new(1, -210, 0, 200))
-local A14 = A8("Y", UDim2.new(1, -210, 0, 240))
-local A15 = A8("Z", UDim2.new(1, -210, 0, 280))
-
-local A16 = {
-	Color3.fromRGB(0, 0, 100),
-	Color3.fromRGB(0, 0, 255),
-	Color3.fromRGB(0, 255, 255),
-	Color3.fromRGB(255, 255, 255),
-	Color3.fromRGB(0, 255, 255),
-	Color3.fromRGB(0, 0, 255),
-	Color3.fromRGB(0, 0, 100),
-}
-
-local function A17(A18, A19, A20)
-	return Color3.new(
-		A18.R + (A19.R - A18.R) * A20,
-		A18.G + (A19.G - A18.G) * A20,
-		A18.B + (A19.B - A18.B) * A20
-	)
-end
-
-local A21 = 1
-local A22 = 0
-
-A2.RenderStepped:Connect(function()
-	local A23 = A5.Position
-	A13.Text = "X: " .. math.floor(A23.X)
-	A14.Text = "Y: " .. math.floor(A23.Y)
-	A15.Text = "Z: " .. math.floor(A23.Z)
-
-	A22 += 0.01
-	if A22 >= 1 then
-		A22 = 0
-		A21 = A21 % #A16 + 1
-	end
-
-	local A24 = A21 % #A16 + 1
-	local A25 = A17(A16[A21], A16[A24], A22)
-
-	A13.TextColor3 = A25
-	A14.TextColor3 = A25
-	A15.TextColor3 = A25
-end)
