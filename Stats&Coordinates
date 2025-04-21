@@ -107,8 +107,10 @@ while true do
 	task.wait(1)
 end
 
+task.wait(0.2)
 --/Coordinates/--
 -- Using morph in humanoid doesn't make Coordinates detect, I'd recommend you execute this again.
+
 local A1 = game:GetService("Players")
 local A2 = game:GetService("RunService")
 local A3 = A1.LocalPlayer
