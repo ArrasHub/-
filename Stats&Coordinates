@@ -1,5 +1,7 @@
 -- CREATED BY @lightgray2 - SRC
 -- setfpscap(value) :sob:
+-- https://raw.githubusercontent.com/ArrasHub/-/refs/heads/main/Stats%26Coordinat3s
+-- ^ ^ ^ followed
 local A = game:GetService("Players")
 local B = game:GetService("RunService")
 local C = game:GetService("CoreGui")
@@ -44,12 +46,12 @@ local function J(name, pos, parentGui)
 	L.TextColor3 = Color3.fromRGB(255, 255, 255)
 	L.TextTransparency = 0.25
 	L.Text = name .. ": 0"
-	L.Name = tostring(math.random(10000, 99999))  -- Obfuscated name
+	L.Name = tostring(math.random(10000, 99999))
 	L.Visible = true
 	L.Parent = K
 
 	task.wait(0.1)
-	K.Visible = true -- show frame later to avoid detection
+	K.Visible = true
 
 	return L
 end
