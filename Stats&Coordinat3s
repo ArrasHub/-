@@ -1,0 +1,205 @@
+-- created by @lightgray2
+-- Statistics
+local A = game:GetService("Players")
+local B = game:GetService("RunService")
+local C = game:GetService("CoreGui")
+local D = A.LocalPlayer
+local E = D:GetMouse()
+
+local function ClearGui(guiName)
+	local found = C:FindFirstChild(guiName) or D:FindFirstChild("PlayerGui"):FindFirstChild(guiName)
+	if found then found:Destroy() end
+end
+
+ClearGui("asset_1")
+
+local F = Instance.new("ScreenGui")
+F.Name = "asset_1"
+F.ResetOnSpawn = false
+F.Parent = C
+
+local function CreateStat(name, position)
+	local G = Instance.new("Frame")
+	G.Size = UDim2.new(0, 200, 0, 30)
+	G.Position = position
+	G.BackgroundTransparency = 1
+	G.Active = true
+	G.Draggable = true
+	G.Visible = false
+	G.Parent = F
+
+	local H = Instance.new("TextLabel")
+	H.Size = UDim2.new(1, 0, 1, 0)
+	H.BackgroundTransparency = 1
+	H.Font = Enum.Font.Code
+	H.TextSize = 18
+	H.TextColor3 = Color3.fromRGB(255, 255, 255)
+	H.TextTransparency = 0.25
+	H.Text = name .. ": 0"
+	H.Name = tostring(math.random(10000, 99999))
+	H.Visible = true
+	H.Parent = G
+
+	task.wait(0.1)
+	G.Visible = true
+
+	return H
+end
+
+local I = CreateStat("FPS", UDim2.new(0, 100, 0, 200))
+local J = CreateStat("Ping", UDim2.new(0, 100, 0, 240))
+local K = CreateStat("CPS", UDim2.new(0, 100, 0, 280))
+
+local Clicks = {}
+E.Button1Down:Connect(function()
+	table.insert(Clicks, tick())
+end)
+
+local Gradient = {
+	Color3.fromRGB(0, 0, 100),
+	Color3.fromRGB(0, 0, 255),
+	Color3.fromRGB(0, 255, 255),
+	Color3.fromRGB(255, 255, 255),
+	Color3.fromRGB(0, 255, 255),
+	Color3.fromRGB(0, 0, 255),
+	Color3.fromRGB(0, 0, 100),
+}
+
+local function LerpColor(a, b, t)
+	return Color3.new(
+		a.R + (b.R - a.R) * t,
+		a.G + (b.G - a.G) * t,
+		a.B + (b.B - a.B) * t
+	)
+end
+
+local index, progress = 1, 0
+
+B.RenderStepped:Connect(function()
+	local now = tick()
+	for i = #Clicks, 1, -1 do
+		if now - Clicks[i] > 1 then
+			table.remove(Clicks, i)
+		end
+	end
+	K.Text = "CPS: " .. #Clicks
+
+	if not _G.lastFrame then _G.lastFrame = now end
+	if not _G.frameCount then _G.frameCount = 0 end
+	_G.frameCount += 1
+	if now - _G.lastFrame >= 1 then
+		I.Text = "FPS: " .. _G.frameCount
+		_G.frameCount = 0
+		_G.lastFrame = now
+	end
+
+	progress += 0.01
+	if progress >= 1 then
+		progress = 0
+		index = index % #Gradient + 1
+	end
+
+	local nextIndex = index % #Gradient + 1
+	local color = LerpColor(Gradient[index], Gradient[nextIndex], progress)
+
+	I.TextColor3 = color
+	J.TextColor3 = color
+	K.TextColor3 = color
+end)
+
+while true do
+	J.Text = "Ping: " .. math.floor(D:GetNetworkPing() * 1000) .. "ms"
+	task.wait(1)
+end
+
+-- Coordinates
+local A1 = game:GetService("Players")
+local A2 = game:GetService("RunService")
+local A3 = game:GetService("CoreGui")
+local A4 = A1.LocalPlayer
+local A5 = A4.Character or A4.CharacterAdded:Wait()
+local A6 = A5:WaitForChild("HumanoidRootPart")
+
+local function A7(A8)
+	local A9 = A3:FindFirstChild(A8) or A4:FindFirstChild("PlayerGui"):FindFirstChild(A8)
+	if A9 then A9:Destroy() end
+end
+
+A7("Coordinates1")
+
+local A10 = Instance.new("ScreenGui")
+A10.Name = "Coordinates1"
+A10.ResetOnSpawn = false
+A10.Parent = A3
+
+local function A11(A12, A13)
+	local A14 = Instance.new("Frame")
+	A14.Size = UDim2.new(0, 200, 0, 30)
+	A14.Position = A13
+	A14.BackgroundTransparency = 1
+	A14.Active = true
+	A14.Draggable = true
+	A14.Visible = false
+	A14.Parent = A10
+
+	local A15 = Instance.new("TextLabel")
+	A15.Size = UDim2.new(1, 0, 1, 0)
+	A15.BackgroundTransparency = 1
+	A15.Font = Enum.Font.Code
+	A15.TextSize = 18
+	A15.TextColor3 = Color3.fromRGB(255, 255, 255)
+	A15.TextTransparency = 0.25
+	A15.Text = A12 .. ": 0"
+	A15.Name = tostring(math.random(10000, 99999))
+	A15.Visible = true
+	A15.Parent = A14
+
+	task.wait(0.1)
+	A14.Visible = true
+
+	return A15
+end
+
+local A16 = A11("X", UDim2.new(1, -300, 0, 200))
+local A17 = A11("Y", UDim2.new(1, -300, 0, 240))
+local A18 = A11("Z", UDim2.new(1, -300, 0, 280))
+
+local A19 = {
+	Color3.fromRGB(0, 0, 100),
+	Color3.fromRGB(0, 0, 255),
+	Color3.fromRGB(0, 255, 255),
+	Color3.fromRGB(255, 255, 255),
+	Color3.fromRGB(0, 255, 255),
+	Color3.fromRGB(0, 0, 255),
+	Color3.fromRGB(0, 0, 100),
+}
+
+local function A20(A21, A22, A23)
+	return Color3.new(
+		A21.R + (A22.R - A21.R) * A23,
+		A21.G + (A22.G - A21.G) * A23,
+		A21.B + (A22.B - A21.B) * A23
+	)
+end
+
+local A24, A25 = 1, 0
+
+A2.RenderStepped:Connect(function()
+	local A26 = A6.Position
+	A16.Text = "X: " .. math.floor(A26.X)
+	A17.Text = "Y: " .. math.floor(A26.Y)
+	A18.Text = "Z: " .. math.floor(A26.Z)
+
+	A25 += 0.01
+	if A25 >= 1 then
+		A25 = 0
+		A24 = A24 % #A19 + 1
+	end
+
+	local A27 = A24 % #A19 + 1
+	local A28 = A20(A19[A24], A19[A27], A25)
+
+	A16.TextColor3 = A28
+	A17.TextColor3 = A28
+	A18.TextColor3 = A28
+end)
