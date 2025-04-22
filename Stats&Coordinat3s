@@ -1,5 +1,9 @@
--- created by @lightgray2
--- Statistics
+-- Created by @lightgray2 !
+-- Open Source Statistics&Coordinates
+
+--Bug: https://pastebin.com/ZybFAEzr
+
+-- Statistics • FPS | PING | CPS • --
 local A = game:GetService("Players")
 local B = game:GetService("RunService")
 local C = game:GetService("CoreGui")
@@ -11,17 +15,17 @@ local function ClearGui(guiName)
 	if found then found:Destroy() end
 end
 
-ClearGui("asset_1")
+ClearGui("asset1")
 
 local F = Instance.new("ScreenGui")
-F.Name = "asset_1"
+F.Name = "asset1"
 F.ResetOnSpawn = false
 F.Parent = C
 
-local function CreateStat(name, position)
+local function CreateStat(name, pos)
 	local G = Instance.new("Frame")
 	G.Size = UDim2.new(0, 200, 0, 30)
-	G.Position = position
+	G.Position = pos
 	G.BackgroundTransparency = 1
 	G.Active = true
 	G.Draggable = true
@@ -50,12 +54,12 @@ local I = CreateStat("FPS", UDim2.new(0, 100, 0, 200))
 local J = CreateStat("Ping", UDim2.new(0, 100, 0, 240))
 local K = CreateStat("CPS", UDim2.new(0, 100, 0, 280))
 
-local Clicks = {}
+local S = {}
 E.Button1Down:Connect(function()
-	table.insert(Clicks, tick())
+	table.insert(S, tick())
 end)
 
-local Gradient = {
+local T = {
 	Color3.fromRGB(0, 0, 100),
 	Color3.fromRGB(0, 0, 255),
 	Color3.fromRGB(0, 255, 255),
@@ -65,54 +69,60 @@ local Gradient = {
 	Color3.fromRGB(0, 0, 100),
 }
 
-local function LerpColor(a, b, t)
+local function U(a, b, c)
 	return Color3.new(
-		a.R + (b.R - a.R) * t,
-		a.G + (b.G - a.G) * t,
-		a.B + (b.B - a.B) * t
+		a.R + (b.R - a.R) * c,
+		a.G + (b.G - a.G) * c,
+		a.B + (b.B - a.B) * c
 	)
 end
 
-local index, progress = 1, 0
+local V, W = 1, 0
 
 B.RenderStepped:Connect(function()
-	local now = tick()
-	for i = #Clicks, 1, -1 do
-		if now - Clicks[i] > 1 then
-			table.remove(Clicks, i)
+	local t = tick()
+	for i = #S, 1, -1 do
+		if t - S[i] > 1 then
+			table.remove(S, i)
 		end
 	end
-	K.Text = "CPS: " .. #Clicks
+	K.Text = "CPS: " .. #S
 
-	if not _G.lastFrame then _G.lastFrame = now end
-	if not _G.frameCount then _G.frameCount = 0 end
-	_G.frameCount += 1
-	if now - _G.lastFrame >= 1 then
-		I.Text = "FPS: " .. _G.frameCount
-		_G.frameCount = 0
-		_G.lastFrame = now
+	if not _G.lf then _G.lf = t end
+	if not _G.fm then _G.fm = 0 end
+	_G.fm += 1
+	if t - _G.lf >= 1 then
+		I.Text = "FPS: " .. _G.fm
+		_G.fm = 0
+		_G.lf = t
 	end
 
-	progress += 0.01
-	if progress >= 1 then
-		progress = 0
-		index = index % #Gradient + 1
+	W += 0.01
+	if W >= 1 then
+		W = 0
+		V = V % #T + 1
 	end
+	local col1 = V % #T + 1
+	local blend = U(T[V], T[col1], W)
 
-	local nextIndex = index % #Gradient + 1
-	local color = LerpColor(Gradient[index], Gradient[nextIndex], progress)
-
-	I.TextColor3 = color
-	J.TextColor3 = color
-	K.TextColor3 = color
+	I.TextColor3 = blend
+	J.TextColor3 = blend
+	K.TextColor3 = blend
 end)
 
-while true do
-	J.Text = "Ping: " .. math.floor(D:GetNetworkPing() * 1000) .. "ms"
-	task.wait(1)
-end
+task.spawn(function()
+	while true do
+		J.Text = "Ping: " .. math.floor(D:GetNetworkPing() * 1000) .. "ms"
+		task.wait(1)
+	end
+end)
 
--- Coordinates
+-- Coordinates • X | Y | Z • --
+--[[
+Execute the script again, if the coordinates
+stopped working, it happens if you are morphed
+or humanoid does not exist ]]
+
 local A1 = game:GetService("Players")
 local A2 = game:GetService("RunService")
 local A3 = game:GetService("CoreGui")
@@ -125,10 +135,10 @@ local function A7(A8)
 	if A9 then A9:Destroy() end
 end
 
-A7("Coordinates1")
+A7("Coordinates_GUI")
 
 local A10 = Instance.new("ScreenGui")
-A10.Name = "Coordinates1"
+A10.Name = "Coordinates_GUI"
 A10.ResetOnSpawn = false
 A10.Parent = A3
 
